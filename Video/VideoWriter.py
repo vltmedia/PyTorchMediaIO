@@ -4,12 +4,15 @@ import av
 class VideoWriter:
     def __init__(self, path, frame_rate, bit_rate=1000000, codec='h264', pixel_format='yuv420p', profile=None
                  , channel_format='rgb24'):
+        self.codec = codec
         self.channel_format = channel_format
         self.profile = profile
         self.container = av.open(path, mode='w')
-        self.stream = self.container.add_stream(codec, rate=frame_rate)
+        self.stream = self.container.add_stream(self.codec, rate=frame_rate)
         self.stream.pix_fmt = pixel_format
         self.stream.bit_rate = bit_rate
+        if self.codec is 'prores':
+            self.stream.profile = profile
 
     def write(self, frames):
         # frames: [T, C, H, W]
